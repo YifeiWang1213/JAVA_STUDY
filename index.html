@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Java 学习笔记</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>☕</text></svg>" />
+  <link rel="stylesheet" href="vendor/hl-light.css" id="hl-theme" />
+  <link rel="stylesheet" href="assets/style.css" />
+  <script>
+    (function () {
+      var t = localStorage.getItem('theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.dataset.theme = t;
+    })();
+  </script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <a href="#/" class="logo"><span class="logo-icon">☕</span><span id="site-title">Java 学习笔记</span></a>
+      <nav class="nav">
+        <a href="#/" data-nav="home">首页</a>
+        <a href="#/category/笔记" data-nav="笔记">笔记</a>
+        <a href="#/category/刷题" data-nav="刷题">刷题</a>
+        <a href="#/tags" data-nav="tags">标签</a>
+        <a href="#/archive" data-nav="archive">归档</a>
+        <a href="#/about" data-nav="about">关于</a>
+      </nav>
+      <div class="tools">
+        <button class="icon-btn" id="search-btn" title="搜索 (Ctrl/⌘ + K)">🔍</button>
+        <button class="icon-btn" id="theme-btn" title="切换主题">🌓</button>
+        <button class="icon-btn menu-btn" id="menu-btn" title="菜单">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" id="app">
+    <div class="loading">加载中…</div>
+  </main>
+
+  <footer class="footer">
+    <div class="container" id="footer-text"></div>
+  </footer>
+
+  <div class="search-mask" id="search-mask" hidden>
+    <div class="search-box">
+      <input id="search-input" type="text" placeholder="搜索标题、标签、内容…" autocomplete="off" />
+      <div id="search-results" class="search-results"></div>
+    </div>
+  </div>
+
+  <button class="back-top" id="back-top" title="回到顶部">↑</button>
+
+  <script src="vendor/marked.min.js"></script>
+  <script src="vendor/highlight.min.js"></script>
+  <script src="assets/config.js"></script>
+  <script src="assets/app.js"></script>
+</body>
+</html>
