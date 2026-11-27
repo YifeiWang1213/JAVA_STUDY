@@ -17,6 +17,20 @@
     "text": "零、最简单的用法：双击脚本 在 Finder 里打开 文件夹，双击对应文件即可： 文件 作用 启动博客并打开浏览器 弹窗选择「笔记 / 题解」、输入标题，自动生成模板并用 Cursor 打开 一键发布到 GitHub Pages（第一次需要填仓库地址） 关闭本地博客 第一次双击如果提示“无法打开”，右键 → 打开 → 再点一次「打开」即可。 一、新建文章（命令行方式） 在 目录下打开终端： 命令会在 下生成一个带模板的 文件，直接编辑即可。也可以手动在 里新建 文件。 二、Front Matter 字段说明 每篇文章开头 之间的部分： 字段 说明 示例 title 标题 HashMap 底层原理 date 日期 2026 11 27 category 分类： 或 刷题 tags 标签，数组写法 [集合, 面试] difficulty 难度（刷题用）：简单 / 中等 / 困难 中等 source 原题链接（刷题用） https://leetcode.cn/... summary 摘要，不写则自动截取正文 pinned 是否置顶 true draft 草稿，为 true 时不显示 true 三、本地预览 浏览器打开 <http://localhost:4000 。修改 里的文章后 刷新页面 即可看到效果（服务器会自动重建索引）。 注意：不要直接双击 打开，浏览器会禁止读取本地文件。 四、个人信息 修改 ：站点标题、昵称、简介、GitHub 链接，以及侧栏的 学习路线 （ 表示已完成）。 五、部署到 GitHub Pages 1. 在 GitHub 新建一个 公开 仓库（例如 ），不要勾选 README 2. 双击 ，粘贴仓库地址，如 3. 推送时如果要密码：用户名填 GitHub 用户名，密码填 Personal Access Token （GitHub → Settings → Developer settings → Personal access tokens，勾选 权限） 4. 第一次发布后，在仓库 Settings → Pages → 分支选 、目录选 → Save 5. 几分钟后即可通过 访问 以后每次写完文章，再双击一次 就会自动更新。 六、Markdown 小技巧 行内代码： 引用块用 记录重点 任务清单： [ ] 学完 Java 基础 [ ] 刷完 LeetCode Hot 100 快捷键 可以打开全文搜索。"
   },
   {
+    "slug": "2026-11-27-线上写作测试",
+    "title": "线上写作测试",
+    "date": "2026-11-27",
+    "category": "笔记",
+    "tags": [],
+    "difficulty": "",
+    "source": "",
+    "summary": "测试 中文 内容 ✅",
+    "pinned": false,
+    "draft": false,
+    "words": 13,
+    "text": "测试 中文 内容 ✅"
+  },
+  {
     "slug": "2026-11-26-HashMap底层原理",
     "title": "HashMap 底层原理（JDK 1.8）",
     "date": "2026-11-26",
