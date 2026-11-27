@@ -1,9 +1,33 @@
 (function () {
   const CFG = window.SITE_CONFIG || {};
+  const Editor = window.BlogEditor;
+  const PM = window.PostMeta;
   const app = document.getElementById('app');
   const PAGE_SIZE = 10;
   let POSTS = [];
   const mdCache = {};
+
+  const editorCtx = {
+    getPosts: () => POSTS,
+    upsertPost(entry, body) {
+      POSTS = POSTS.filter(p => p.slug !== entry.slug);
+      if (!entry.draft) POSTS.push(entry);
+      PM.sortPosts(POSTS);
+      mdCache[entry.slug] = body;
+    },
+    removePost(slug) {
+      POSTS = POSTS.filter(p => p.slug !== slug);
+      delete mdCache[slug];
+    },
+  };
+
+  async function loadText(p) {
+    const fresh = await Editor.freshText(p);
+    if (fresh !== null) return fresh;
+    const res = await fetch(p.split('/').map(encodeURIComponent).join('/'), { cache: 'no-cache' });
+    if (!res.ok) throw new Error(`${res.status}`);
+    return res.text();
+  }
 
   // ---------- 工具函数 ----------
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -211,9 +235,11 @@
     if (!p) return renderNotFound();
 
     if (!mdCache[slug]) {
-      const res = await fetch(`posts/${enc(slug)}.md`, { cache: 'no-cache' });
-      if (!res.ok) return renderNotFound();
-      mdCache[slug] = stripFrontMatter(await res.text());
+      try {
+        mdCache[slug] = stripFrontMatter(await loadText(`posts/${slug}.md`));
+      } catch (e) {
+        return renderNotFound();
+      }
     }
 
     const html = marked.parse(mdCache[slug]);
@@ -232,6 +258,11 @@
               ${p.source ? `<a class="source-link" href="${esc(p.source)}" target="_blank" rel="noopener">🔗 原题链接</a>` : ''}
             </div>
             <div class="tag-list">${p.tags.map(t => `<a class="tag" href="#/tag/${enc(t)}">#${esc(t)}</a>`).join('')}</div>
+            ${Editor.canEdit() ? `
+            <div class="post-admin">
+              <a class="btn" href="#/write/${enc(p.slug)}">✏️ 编辑</a>
+              <button class="btn danger" id="delete-btn">🗑️ 删除</button>
+            </div>` : ''}
           </header>
           <div class="markdown-body" id="post-body">${html}</div>
           <nav class="post-nav">
@@ -243,6 +274,8 @@
       </div>`;
 
     enhancePost();
+    const del = document.getElementById('delete-btn');
+    if (del) del.onclick = () => Editor.deletePost(p.slug, editorCtx);
     document.title = `${p.title} | ${CFG.title}`;
   }
 
@@ -313,8 +346,13 @@
         (key === 'home' && !name) || key === name || (name === 'category' && key === arg));
     });
     document.querySelector('.nav').classList.remove('open');
+    document.getElementById('write-btn').hidden = !Editor.canEdit() || name === 'write';
+    document.body.classList.toggle('wide', name === 'write');
+    if (name !== 'write') Editor.leave();
 
-    if (!name) renderHome(q);
+    if (name === 'write') Editor.renderWrite(app, arg, editorCtx);
+    else if (name === 'login') Editor.renderLogin(app);
+    else if (!name) renderHome(q);
     else if (name === 'post') renderPost(arg);
     else if (name === 'category') renderCategory(arg, q);
     else if (name === 'tag') renderTag(arg, q);
@@ -386,11 +424,10 @@
     applyHlTheme();
     document.getElementById('site-title').textContent = CFG.title;
     document.getElementById('footer-text').innerHTML =
-      `© ${CFG.since || ''}${CFG.since && CFG.since < new Date().getFullYear() ? ' - ' + new Date().getFullYear() : ''} ${esc(CFG.author)} · 持续学习，持续记录`;
+      `© ${CFG.since || ''}${CFG.since && CFG.since < new Date().getFullYear() ? ' - ' + new Date().getFullYear() : ''} ${esc(CFG.author)} · 持续学习，持续记录 · <a href="#/write">写作后台</a>`;
     marked.setOptions({ gfm: true, breaks: false });
     try {
-      const res = await fetch('posts.json', { cache: 'no-cache' });
-      POSTS = await res.json();
+      POSTS = JSON.parse(await loadText('posts.json'));
     } catch (e) {
       app.innerHTML = '<div class="card empty">无法加载 posts.json，请先运行 <code>npm run build</code>，并通过 <code>npm run dev</code> 启动（不要直接双击打开 html）。</div>';
       return;

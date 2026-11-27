@@ -7,6 +7,9 @@ window.SITE_CONFIG = {
   github: 'https://github.com/YifeiWang1213',
   email: '',
   since: 2026,
+  // 网页写作：文章保存到这个 GitHub 仓库
+  repo: 'YifeiWang1213/JAVA_STUDY',
+  branch: 'main',
   // 学习路线，会展示在首页侧栏与“关于”页
   roadmap: [
     { name: 'Java 基础语法', done: true },

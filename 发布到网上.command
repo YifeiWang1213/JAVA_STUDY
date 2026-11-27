@@ -20,6 +20,14 @@ fi
 git add -A
 git commit -m "更新博客 $(date '+%Y-%m-%d %H:%M')" >/dev/null 2>&1 || echo "没有新的改动，直接推送"
 
+if git ls-remote --exit-code origin main >/dev/null 2>&1; then
+  echo "同步网页上写的文章…"
+  git pull --rebase origin main || { echo "❌ 同步失败，请把上面的报错发给我"; exit 1; }
+  node scripts/build.js
+  git add -A
+  git commit -m "重建索引" >/dev/null 2>&1
+fi
+
 if git push -u origin main; then
   REMOTE=$(git remote get-url origin)
   USER_REPO=$(echo "$REMOTE" | sed -E 's#(https://github.com/|git@github.com:)##; s#\.git$##')
